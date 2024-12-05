@@ -5,19 +5,30 @@
 
 #include <JuceHeader.h>
 
-//==============================================================================
-struct SineWaveSound   : public juce::SynthesiserSound
+#include "Synthesis/MasterWindow.h"
+
+class SineWaveSound   : public juce::SynthesiserSound
 {
+public:
     SineWaveSound() {}
 
     bool appliesToNote    (int) override        { return true; }
     bool appliesToChannel (int) override        { return true; }
 };
 
-//==============================================================================
-struct SineWaveVoice   : public juce::SynthesiserVoice
-{
-    SineWaveVoice() {}
+
+class SineWaveVoice   : public juce::SynthesiserVoice
+{ 
+private:
+    double frequencyHz = 0.0f, level = 0.0f, time = 0.0f, timeStep;
+    
+public:
+    SineWaveVoice()
+    {
+        timeStep = 1 / (double)getSampleRate();
+    }
+
+    MasterWindow masterWindow;
 
     bool canPlaySound (juce::SynthesiserSound* sound) override
     {
@@ -26,29 +37,18 @@ struct SineWaveVoice   : public juce::SynthesiserVoice
 
     void startNote (int midiNoteNumber, float velocity,
                     juce::SynthesiserSound*, int /*currentPitchWheelPosition*/) override
-    {
-        currentAngle = 0.0;
-        level = velocity * 0.15;
-        tailOff = 0.0;
-
-        auto cyclesPerSecond = juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber);
-        auto cyclesPerSample = cyclesPerSecond / getSampleRate();
-
-        angleDelta = cyclesPerSample * 2.0 * juce::MathConstants<double>::pi;
+    { 
+        frequencyHz = (double)juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber);
+        masterWindow.SetNoteFreq(frequencyHz);
+        level = 1.0f;
+        masterWindow.SetNoteOnTime(this->time);
     }
 
     void stopNote (float /*velocity*/, bool allowTailOff) override
     {
-        if (allowTailOff)
-        {
-            if (tailOff == 0.0)
-                tailOff = 1.0;
-        }
-        else
-        {
-            clearCurrentNote();
-            angleDelta = 0.0;
-        }
+        masterWindow.SetNoteOnTime(this->time);
+        level = 0.0f;
+		clearCurrentNote();
     }
 
     void pitchWheelMoved (int) override      {}
@@ -56,49 +56,17 @@ struct SineWaveVoice   : public juce::SynthesiserVoice
 
     void renderNextBlock (juce::AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
-        if (angleDelta != 0.0)
-        {
-            if (tailOff > 0.0) // [7]
-            {
-                while (--numSamples >= 0)
-                {
-                    auto currentSample = (float) (std::sin (currentAngle) * level * tailOff);
+		while (--numSamples >= 0)
+		{
+            float currentSample = level * masterWindow.MixSound(time);
 
-                    for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
-                        outputBuffer.addSample (i, startSample, currentSample);
+			for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
+				outputBuffer.addSample (i, startSample, currentSample);
 
-                    currentAngle += angleDelta;
-                    ++startSample;
-
-                    tailOff *= 0.99; // [8]
-
-                    if (tailOff <= 0.005)
-                    {
-                        clearCurrentNote(); // [9]
-
-                        angleDelta = 0.0;
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                while (--numSamples >= 0) // [6]
-                {
-                    auto currentSample = (float) (std::sin (currentAngle) * level);
-
-                    for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
-                        outputBuffer.addSample (i, startSample, currentSample);
-
-                    currentAngle += angleDelta;
-                    ++startSample;
-                }
-            }
-        }
+			++startSample;
+            time += timeStep;
+		}
     }
-
-private:
-    double currentAngle = 0.0, angleDelta = 0.0, level = 0.0, tailOff = 0.0;
 };
 
  
