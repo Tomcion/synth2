@@ -5,6 +5,15 @@
               companyName="TymiDymi" pluginFormats="buildAU,buildStandalone,buildVST,buildVST3">
   <MAINGROUP id="r5XWUq" name="synth2">
     <GROUP id="{1D0DBD7D-650B-8D78-9A08-184F182B940B}" name="Source">
+      <GROUP id="{9A9724BF-D89F-00DD-2B12-039639A84053}" name="GUI">
+        <FILE id="Z2spHR" name="EnvelopeGUI.h" compile="0" resource="0" file="Source/GUI/EnvelopeGUI.h"/>
+        <FILE id="AphtY0" name="FilterGUI.h" compile="0" resource="0" file="Source/GUI/FilterGUI.h"/>
+        <FILE id="dZ0d6g" name="LFOGUI.h" compile="0" resource="0" file="Source/GUI/LFOGUI.h"/>
+        <FILE id="UWYEMh" name="OscillatorGUI.cpp" compile="1" resource="0"
+              file="Source/GUI/OscillatorGUI.cpp"/>
+        <FILE id="vCxUt3" name="OscillatorGUI.h" compile="0" resource="0" file="Source/GUI/OscillatorGUI.h"/>
+        <FILE id="ivXt6x" name="SaturatorGUI.h" compile="0" resource="0" file="Source/GUI/SaturatorGUI.h"/>
+      </GROUP>
       <GROUP id="{81D35316-D911-E336-3840-D3E9775BDD03}" name="Synthesis">
         <FILE id="zEDz1D" name="Envelope.cpp" compile="1" resource="0" file="Source/Synthesis/Envelope.cpp"/>
         <FILE id="nOHlk5" name="Envelope.h" compile="0" resource="0" file="Source/Synthesis/Envelope.h"/>

@@ -1,22 +1,14 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin editor.
-
-  ==============================================================================
-*/
-
-#include "PluginProcessor.h"
+ #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-//==============================================================================
-Synth2AudioProcessorEditor::Synth2AudioProcessorEditor (Synth2AudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p)
-{
-    // Make sure that before the constructor has finished, you've set the
-    // editor's size to whatever you need it to be.
 
-	setSize (600, 190); 
+Synth2AudioProcessorEditor::Synth2AudioProcessorEditor (Synth2AudioProcessor& p)
+    : AudioProcessorEditor (&p), audioProcessor (p), oscComponent(p)
+{
+    addAndMakeVisible(oscComponent);
+
+
+	setSize (600, 300); 
 }
 
 Synth2AudioProcessorEditor::~Synth2AudioProcessorEditor()
@@ -26,16 +18,14 @@ Synth2AudioProcessorEditor::~Synth2AudioProcessorEditor()
 //==============================================================================
 void Synth2AudioProcessorEditor::paint (juce::Graphics& g)
 {
-    // (Our component is opaque, so we must completely fill the background with a solid colour)
     g.fillAll (getLookAndFeel().findColour (juce::ResizableWindow::backgroundColourId));
 
     g.setColour (juce::Colours::white);
     g.setFont (juce::FontOptions (15.0f));
-    g.drawFittedText ("Hello World!!", getLocalBounds(), juce::Justification::centred, 1);
+    //g.drawFittedText ("Hello World!!", getLocalBounds(), juce::Justification::centred, 1);
 }
 
 void Synth2AudioProcessorEditor::resized()
 {
-    // This is generally where you'll want to lay out the positions of any
-    // subcomponents in your editor..
+    //oscComponent.setBounds(40, 30, 20, getHeight() - 60);
 }

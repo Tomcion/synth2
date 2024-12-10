@@ -3,6 +3,7 @@
 #include "ModulableField.h"
 #include "LFO.h"
  
+
 class Oscillator : public WaveGenerator {
 private:
     char id;
@@ -15,7 +16,7 @@ private:
 
     ModulableField detune; 
     ModFieldList mod_fields;
-    
+ 
 public:
     void  AddAutomatorDetune(ParameterAutomator* aut);
 
