@@ -22,7 +22,7 @@ public:
 
     Oscillator(char id, WaveType type, float amplitude, int octave);
 
-    void setState(float level);
+    void SetState(int wf, float level, int octave, float detune);
 
     void SetId(char num); 
 
@@ -45,6 +45,8 @@ private:
  
 public:
     virtual void RenderWindow();
+
+    void SetStates(int wf, float level, int octave, float detune);
 
     OscillatorsWindow();
 

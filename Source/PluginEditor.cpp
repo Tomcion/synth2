@@ -3,11 +3,11 @@
 
 
 Synth2AudioProcessorEditor::Synth2AudioProcessorEditor (Synth2AudioProcessor& p)
-    : AudioProcessorEditor (&p), audioProcessor (p), oscComponent(p)
-{
-    addAndMakeVisible(oscComponent);
+    : AudioProcessorEditor (&p), audioProcessor (p), oscPanel(p)
+{ 
+	setSize (900, 600); 
 
-	 setSize (600, 300); 
+    addAndMakeVisible(&oscPanel);
 }
 
 Synth2AudioProcessorEditor::~Synth2AudioProcessorEditor()
@@ -26,5 +26,5 @@ void Synth2AudioProcessorEditor::paint (juce::Graphics& g)
 
 void Synth2AudioProcessorEditor::resized()
 {
-    //oscComponent.setBounds(40, 30, 20, getHeight() - 60);
+    oscPanel.setBounds(getLocalBounds());
 }

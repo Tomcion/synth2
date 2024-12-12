@@ -13,9 +13,12 @@ Oscillator::Oscillator(char id, WaveType type, float amplitude, int octave)
     this->SetId(id);
 }
 
-void Oscillator::setState(float level)
+void Oscillator::SetState(int wf, float level, int octave, float detune)
 {
+	this->type = (WaveType)wf;
 	this->amplitude = level;
+	this->octave = octave;
+	//this->detune = detune;
 }
 
 void Oscillator::SetId(char num)
@@ -48,23 +51,13 @@ void Oscillator::UpdateParameters(double time)
 
 void Oscillator::RenderOsc()
 {
-    //ImGui::Begin(windowName.c_str());
-    //const char* items[5] = { "Sine", "Triangle", "Square", "Sawtooth", "White Noise"};
-    //int selected_item = type;
-    //if (ImGui::Combo("Waveform", &selected_item, items, 5))
-    //    type = (WaveType)selected_item;
-
-    //ImGuiKnobs::Knob("Level", &(this->amplitude),
-    //    0.0f, 1.0f, 0.01f, "%.2f", ImGuiKnobVariant_Wiper,
-    //    0.0f, ImGuiKnobFlags_DragVertical);
-    //ImGui::SameLine();
-    //ImGuiKnobs::KnobInt("Octave", &(this->octave),
-    //    0, MAX_OCTAVE, 0.1f, "%i", ImGuiKnobVariant_Stepped,
-    //    0, ImGuiKnobFlags_DragVertical, MAX_OCTAVE + 1); 
-    //ImGui::SameLine();
-    //detune.RenderField();
-    //ImGui::End();;
 } 
+
+void OscillatorsWindow::SetStates(int wf, float level, int octave, float detune)
+{
+    for (int i = 0; i < oscs.size(); i++)
+        oscs[i]->SetState(wf, level, octave, detune);
+}
 
 void OscillatorsWindow::RenderWindow()
 {

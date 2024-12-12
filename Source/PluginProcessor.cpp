@@ -1,21 +1,10 @@
-/*
-  ==============================================================================
-
-    This file contains the basic framework code for a JUCE plugin processor.
-
-  ==============================================================================
-*/
-
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
-//==============================================================================
+
 Synth2AudioProcessor::Synth2AudioProcessor()
 	: AudioProcessor (BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
-    parameters(*this, nullptr, juce::Identifier("Synth2"),
-        {
-            std::make_unique<juce::AudioParameterFloat> ("level", "Level", 0.0f, 1.0f, 0.5f)
-        })
+    parameters(*this, nullptr, juce::Identifier("Synth2"), createParameterLayout())
 {
     synth.clearVoices();
     for (int i = 0; i < 8; ++i)
@@ -31,7 +20,66 @@ Synth2AudioProcessor::~Synth2AudioProcessor()
 { 
 }
 
-//==============================================================================
+void Synth2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
+{
+    for (int i = 0; i < synth.getNumVoices(); i++)
+    {
+        if (voice = dynamic_cast<CustomSynthVoice*>(synth.getVoice(i)))
+        {
+            for (int j = 1; j <= numberOfOscs; j++)
+            {
+				auto levelValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_level");
+				auto detuneValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_detune");
+				auto waveformValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_waveform");
+				auto octaveValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_octave");
+				voice->SetOscillators(
+                    waveformValue->load(),
+                    levelValue->load(),
+                    octaveValue->load(),
+                    detuneValue->load()
+                );
+            }
+        }
+    }
+
+    buffer.clear();
+    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
+}
+
+juce::AudioProcessorValueTreeState::ParameterLayout Synth2AudioProcessor::createParameterLayout()
+{
+    juce::AudioProcessorValueTreeState::ParameterLayout params;
+
+    for (int i = 1; i <= numberOfOscs; i++)
+    {
+        params.add(std::make_unique<juce::AudioParameterFloat>(
+            "osc" + juce::String(i) + "_level",
+            "Oscillator " + juce::String(i) + " Level",
+            0.0f, 1.0f, 0.5f
+        ));
+
+        params.add(std::make_unique<juce::AudioParameterFloat>(
+            "osc" + juce::String(i) + "_detune",
+            "Oscillator " + juce::String(i) + " Detune",
+            -1.0f, 1.0f, 0.0f
+        ));
+
+        params.add(std::make_unique<juce::AudioParameterInt>(
+            "osc" + juce::String(i) + "_octave",
+            "Oscillator " + juce::String(i) + " Octave",
+            0, 5, 3
+        ));
+
+        params.add(std::make_unique<juce::AudioParameterInt>(
+            "osc" + juce::String(i) + "_waveform",
+            "Oscillator " + juce::String(i) + " Waveform",
+            1, 5, 1
+        ));
+    }
+
+    return params;
+}
+
 const juce::String Synth2AudioProcessor::getName() const
 {
     return JucePlugin_Name;
@@ -39,29 +87,17 @@ const juce::String Synth2AudioProcessor::getName() const
 
 bool Synth2AudioProcessor::acceptsMidi() const
 {
-   #if JucePlugin_WantsMidiInput
     return true;
-   #else
-    return false;
-   #endif
 }
 
 bool Synth2AudioProcessor::producesMidi() const
 {
-   #if JucePlugin_ProducesMidiOutput
-    return true;
-   #else
     return false;
-   #endif
 }
 
 bool Synth2AudioProcessor::isMidiEffect() const
 {
-   #if JucePlugin_IsMidiEffect
-    return true;
-   #else
     return false;
-   #endif
 }
 
 double Synth2AudioProcessor::getTailLengthSeconds() const
@@ -71,8 +107,7 @@ double Synth2AudioProcessor::getTailLengthSeconds() const
 
 int Synth2AudioProcessor::getNumPrograms()
 {
-    return 1;   // NB: some hosts don't cope very well if you tell them there are 0 programs,
-                // so this should be at least 1, even if you're not really implementing programs.
+    return 1;
 }
 
 int Synth2AudioProcessor::getCurrentProgram()
@@ -103,7 +138,7 @@ void Synth2AudioProcessor::releaseResources()
 }
 
 #ifndef JucePlugin_PreferredChannelConfigurations
-bool Synth2AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) const
+bool Synth2AudioProcessor::isBusesLayoutSupported(const BusesLayout& layouts) const
 {
   #if JucePlugin_IsMidiEffect
     juce::ignoreUnused (layouts);
@@ -127,25 +162,10 @@ bool Synth2AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) c
   #endif
 }
 #endif
-
-void Synth2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
-{
-    for (int i = 0; i < synth.getNumVoices(); i++)
-    {
-        if (voice = dynamic_cast<CustomSynthVoice*>(synth.getVoice(i)))
-        {
-            auto levelValue = parameters.getRawParameterValue("level");
-            voice->SetOscillator(levelValue->load());
-        }
-    }
-    buffer.clear();
-    synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
-}
-
-//==============================================================================
+ 
 bool Synth2AudioProcessor::hasEditor() const
 {
-    return true; // (change this to false if you choose to not supply an editor)
+    return true;
 }
 
 juce::AudioProcessorEditor* Synth2AudioProcessor::createEditor()
@@ -153,25 +173,28 @@ juce::AudioProcessorEditor* Synth2AudioProcessor::createEditor()
     return new Synth2AudioProcessorEditor (*this);
 }
 
-//==============================================================================
-void Synth2AudioProcessor::getStateInformation (juce::MemoryBlock& destData)
+void Synth2AudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 {
 	auto state = parameters.copyState();
-	std::unique_ptr<juce::XmlElement> xml (state.createXml());
+	std::unique_ptr<juce::XmlElement> xml(state.createXml());
+
+	//juce::File file = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("state1.xml");
+	//file.replaceWithText(xml->toString());
+
 	copyXmlToBinary (*xml, destData);
 }
 
-void Synth2AudioProcessor::setStateInformation (const void* data, int sizeInBytes)
+void Synth2AudioProcessor::setStateInformation(const void* data, int sizeInBytes)
 {
-	std::unique_ptr<juce::XmlElement> xmlState (getXmlFromBinary (data, sizeInBytes));
+	std::unique_ptr<juce::XmlElement> xmlState(getXmlFromBinary(data, sizeInBytes));
 
-	if (xmlState.get() != nullptr)
-		if (xmlState->hasTagName (parameters.state.getType()))
-			parameters.replaceState (juce::ValueTree::fromXml (*xmlState));
+    if (xmlState.get() != nullptr)
+    {
+        if (xmlState->hasTagName(parameters.state.getType()))
+            parameters.replaceState(juce::ValueTree::fromXml(*xmlState));
+    }
 }
 
-//==============================================================================
-// This creates new instances of the plugin..
 juce::AudioProcessor* JUCE_CALLTYPE createPluginFilter()
 {
     return new Synth2AudioProcessor();

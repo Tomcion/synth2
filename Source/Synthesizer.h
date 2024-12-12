@@ -1,8 +1,5 @@
 #pragma once
  
-//#include <juce_audio_basics/juce_audio_basics.h>
-//#include <juce_audio_processors/juce_audio_processors.h>
-
 #include <JuceHeader.h>
 
 #include "Synthesis/Envelope.h"
@@ -34,22 +31,29 @@ private:
     Saturator* saturator;
     Biquad* filter;
 
-    Oscillator mainOscillator;
 public:
     CustomSynthVoice()
-        : mainOscillator(1, SINE, 0.5f, 3)
     {
         timeStep = 1 / (double)getSampleRate();
+
+		Oscillator* osc1 = new Oscillator(1, SAWTOOTH, 0.31f, 1);
+		oscillatorsWindow.AddOscillator(osc1);
+
+		Oscillator* osc2 = new Oscillator(2, SQUARE, 0.21f, 0);
+		oscillatorsWindow.AddOscillator(osc2);
+
+		Oscillator* osc3 = new Oscillator(3, NOISE, 0.03f, 3);
+		oscillatorsWindow.AddOscillator(osc3); 
     }
 
-    void SetOscillator(float level)
+    void SetOscillators(int wf, float level, int octave, float detune)
     {
-        mainOscillator.setState(level);
+        oscillatorsWindow.SetStates(wf, level, octave, detune);
     }
 
     void SetNoteFreq(float freq)
     {
-        mainOscillator.SetOscFrequencyRad(freq);
+        oscillatorsWindow.SetNoteFrequency(freq);
     }
     
     void SetNoteOnTime(double time)
@@ -64,7 +68,7 @@ public:
 
     double MixSound(double time)
     {
-        double output = mainOscillator.ProduceWave(time);
+        double output = oscillatorsWindow.MixOscillators(time);
         //double output = oscillatorsWindow.MixOscillators(time);
         //output *= masterEnvelope->CalcAutomation(time);
         //output = filter->process(output);
@@ -72,12 +76,12 @@ public:
         return output;
     }
 
-    bool canPlaySound (juce::SynthesiserSound* sound) override
+    bool canPlaySound(juce::SynthesiserSound* sound) override
     {
         return dynamic_cast<CustomSynthSound*> (sound) != nullptr;
     }
 
-    void startNote (int midiNoteNumber, float velocity,
+    void startNote(int midiNoteNumber, float velocity,
                     juce::SynthesiserSound*, int /*currentPitchWheelPosition*/) override
     { 
         frequencyHz = (double)juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber);
@@ -86,17 +90,17 @@ public:
         SetNoteOnTime(this->time);
     }
 
-    void stopNote (float /*velocity*/, bool allowTailOff) override
+    void stopNote(float /*velocity*/, bool allowTailOff) override
     {
         SetNoteOnTime(this->time);
         level = 0.0f;
 		clearCurrentNote();
     }
 
-    void pitchWheelMoved (int) override      {}
-    void controllerMoved (int, int) override {}
+    void pitchWheelMoved(int) override      {}
+    void controllerMoved(int, int) override {}
 
-    void renderNextBlock (juce::AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
+    void renderNextBlock(juce::AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
     {
 		while (--numSamples >= 0)
 		{
