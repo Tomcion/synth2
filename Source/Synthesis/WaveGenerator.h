@@ -10,7 +10,7 @@
 const double halfToneRatio = pow(2.0, 1.0 / 12.0);
 
 enum WaveType {
-    SINE = 0,
+    SINE = 1,
     TRIANGLE,
     SQUARE,
     SAWTOOTH,

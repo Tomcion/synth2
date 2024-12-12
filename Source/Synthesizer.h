@@ -11,17 +11,17 @@
 #include "Synthesis/Saturator.h"
 #include "Synthesis/Filter.h"
  
-class SineWaveSound   : public juce::SynthesiserSound
+class CustomSynthSound   : public juce::SynthesiserSound
 {
 public:
-    SineWaveSound() {}
+    CustomSynthSound() {}
 
     bool appliesToNote    (int) override        { return true; }
     bool appliesToChannel (int) override        { return true; }
 };
 
 
-class SineWaveVoice   : public juce::SynthesiserVoice
+class CustomSynthVoice   : public juce::SynthesiserVoice
 { 
 private:
     double frequencyHz = 0.0f, level = 0.0f, time = 0.0f, timeStep;
@@ -36,10 +36,15 @@ private:
 
     Oscillator mainOscillator;
 public:
-    SineWaveVoice()
+    CustomSynthVoice()
         : mainOscillator(1, SINE, 0.5f, 3)
     {
         timeStep = 1 / (double)getSampleRate();
+    }
+
+    void SetOscillator(float level)
+    {
+        mainOscillator.setState(level);
     }
 
     void SetNoteFreq(float freq)
@@ -69,7 +74,7 @@ public:
 
     bool canPlaySound (juce::SynthesiserSound* sound) override
     {
-        return dynamic_cast<SineWaveSound*> (sound) != nullptr;
+        return dynamic_cast<CustomSynthSound*> (sound) != nullptr;
     }
 
     void startNote (int midiNoteNumber, float velocity,

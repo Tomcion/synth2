@@ -22,6 +22,8 @@ public:
 
     Oscillator(char id, WaveType type, float amplitude, int octave);
 
+    void setState(float level);
+
     void SetId(char num); 
 
     const int GetNumber(); 

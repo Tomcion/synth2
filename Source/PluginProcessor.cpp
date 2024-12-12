@@ -20,10 +20,10 @@ Synth2AudioProcessor::Synth2AudioProcessor()
     synth.clearVoices();
     for (int i = 0; i < 8; ++i)
     {
-        synth.addVoice(new SineWaveVoice());
+        synth.addVoice(new CustomSynthVoice());
     }
     synth.clearSounds();
-    synth.addSound(new SineWaveSound());
+    synth.addSound(new CustomSynthSound());
 }
 
 
@@ -130,6 +130,14 @@ bool Synth2AudioProcessor::isBusesLayoutSupported (const BusesLayout& layouts) c
 
 void Synth2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
 {
+    for (int i = 0; i < synth.getNumVoices(); i++)
+    {
+        if (voice = dynamic_cast<CustomSynthVoice*>(synth.getVoice(i)))
+        {
+            auto levelValue = parameters.getRawParameterValue("level");
+            voice->SetOscillator(levelValue->load());
+        }
+    }
     buffer.clear();
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
 }

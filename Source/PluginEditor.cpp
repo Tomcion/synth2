@@ -7,8 +7,7 @@ Synth2AudioProcessorEditor::Synth2AudioProcessorEditor (Synth2AudioProcessor& p)
 {
     addAndMakeVisible(oscComponent);
 
-
-	setSize (600, 300); 
+	 setSize (600, 300); 
 }
 
 Synth2AudioProcessorEditor::~Synth2AudioProcessorEditor()

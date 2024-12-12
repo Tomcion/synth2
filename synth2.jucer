@@ -9,8 +9,6 @@
         <FILE id="Z2spHR" name="EnvelopeGUI.h" compile="0" resource="0" file="Source/GUI/EnvelopeGUI.h"/>
         <FILE id="AphtY0" name="FilterGUI.h" compile="0" resource="0" file="Source/GUI/FilterGUI.h"/>
         <FILE id="dZ0d6g" name="LFOGUI.h" compile="0" resource="0" file="Source/GUI/LFOGUI.h"/>
-        <FILE id="UWYEMh" name="OscillatorGUI.cpp" compile="1" resource="0"
-              file="Source/GUI/OscillatorGUI.cpp"/>
         <FILE id="vCxUt3" name="OscillatorGUI.h" compile="0" resource="0" file="Source/GUI/OscillatorGUI.h"/>
         <FILE id="ivXt6x" name="SaturatorGUI.h" compile="0" resource="0" file="Source/GUI/SaturatorGUI.h"/>
       </GROUP>

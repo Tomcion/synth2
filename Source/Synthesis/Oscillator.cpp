@@ -13,6 +13,11 @@ Oscillator::Oscillator(char id, WaveType type, float amplitude, int octave)
     this->SetId(id);
 }
 
+void Oscillator::setState(float level)
+{
+	this->amplitude = level;
+}
+
 void Oscillator::SetId(char num)
 {
     this->id = num;
