@@ -176,7 +176,7 @@ private:
 			: backgroundColour(c), processor(p), oscId(id)
 		{ 
 			octaveSlider.setSliderStyle (juce::Slider::LinearBarVertical);
-			octaveSlider.setRange (0, 5, 1);
+			octaveSlider.setRange (-3, 0, 3);
 			octaveSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
 			octaveSlider.setPopupDisplayEnabled (true, false, this);
 			octaveSlider.setTextValueSuffix (" Octave");

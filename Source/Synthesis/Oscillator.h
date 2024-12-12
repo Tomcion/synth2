@@ -14,11 +14,12 @@ private:
 
     float raw_freq_rad;
 
-    ModulableField detune; 
-    ModFieldList mod_fields;
+    float detune;
+    //ModulableField detune; 
+    //ModFieldList mod_fields;
  
 public:
-    void  AddAutomatorDetune(ParameterAutomator* aut);
+    //void  AddAutomatorDetune(ParameterAutomator* aut);
 
     Oscillator(char id, WaveType type, float amplitude, int octave);
 

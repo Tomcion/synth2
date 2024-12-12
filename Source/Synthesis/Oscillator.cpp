@@ -2,16 +2,15 @@
 
 #include <JuceHeader.h>
 
-void  Oscillator::AddAutomatorDetune(ParameterAutomator* aut)
-{
-    (this->detune).SetAutomator(aut);
-}
+//void  Oscillator::AddAutomatorDetune(ParameterAutomator* aut)
+//{
+//    (this->detune).SetAutomator(aut);
+//}
 
 Oscillator::Oscillator(char id, WaveType type, float amplitude, int octave)
-    : WaveGenerator(type, amplitude, 0.0f), octave(octave),
-      detune("Detune", 0.0f, -1.0f, 1.0f)
+    : WaveGenerator(type, amplitude, 0.0f), octave(octave), detune(0.0f)
 {
-    mod_fields.AddField(&detune);
+    //mod_fields.AddField(&detune);
     this->SetId(id);
 }
 
@@ -20,7 +19,7 @@ void Oscillator::SetState(int wf, float level, int octave, float detune)
 	this->type = (WaveType)wf;
 	this->amplitude = level;
 	this->octave = octave;
-	//this->detune = detune;
+	this->detune = detune;
 }
 
 void Oscillator::SetId(char num)
@@ -36,19 +35,18 @@ const int Oscillator::GetNumber()
 
 void Oscillator::SetOscFrequencyRad(double frequency)
 {
-    //this->raw_freq_rad = ToRad(frequency * pow(2, octave));
-    this->raw_freq_rad = ToRad(frequency);
+    this->raw_freq_rad = ToRad(frequency * pow(2.0f, octave));
+    //this->raw_freq_rad = ToRad(frequency);
 }
 
 void Oscillator::UpdateFields(double time)
 {
-    mod_fields.UpdateFields(time);
+    //mod_fields.UpdateFields(time);
 }
 
 void Oscillator::UpdateParameters(double time)
 {
-    float detuneValue = (this->detune).GetValue();
-    this->freq_rad = this->raw_freq_rad * pow(2.0f, detuneValue / 12.0f);
+    this->freq_rad = this->raw_freq_rad * pow(2.0f, detune / 12.0f);
 }
 
 void Oscillator::RenderOsc()

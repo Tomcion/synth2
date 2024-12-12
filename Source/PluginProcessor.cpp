@@ -67,7 +67,7 @@ juce::AudioProcessorValueTreeState::ParameterLayout Synth2AudioProcessor::create
         params.add(std::make_unique<juce::AudioParameterInt>(
             "osc" + juce::String(i) + "_octave",
             "Oscillator " + juce::String(i) + " Octave",
-            0, 5, 3
+            -3, 3, 0
         ));
 
         params.add(std::make_unique<juce::AudioParameterInt>(
