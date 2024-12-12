@@ -1,5 +1,7 @@
 #include "Oscillator.h"
 
+#include <JuceHeader.h>
+
 void  Oscillator::AddAutomatorDetune(ParameterAutomator* aut)
 {
     (this->detune).SetAutomator(aut);
@@ -53,10 +55,9 @@ void Oscillator::RenderOsc()
 {
 } 
 
-void OscillatorsWindow::SetStates(int wf, float level, int octave, float detune)
+void OscillatorsWindow::SetStateWithIndex(int i, int wf, float level, int octave, float detune)
 {
-    for (int i = 0; i < oscs.size(); i++)
-        oscs[i]->SetState(wf, level, octave, detune);
+	oscs[i]->SetState(wf, level, octave, detune);
 }
 
 void OscillatorsWindow::RenderWindow()
@@ -111,7 +112,7 @@ double OscillatorsWindow::MixOscillators(double time)
     double output = 0.0;
     for (int i = 0; i < oscs.size(); i++)
     {
-        oscs[i]->UpdateFields(time);
+        oscs[i]->UpdateFields(time); 
         output += (this->oscs[i])->ProduceWave(time);
     }
     return output;

@@ -46,9 +46,9 @@ public:
 		oscillatorsWindow.AddOscillator(osc3); 
     }
 
-    void SetOscillators(int wf, float level, int octave, float detune)
+    void SetOscillatorWithIndex(int i, int wf, float level, int octave, float detune)
     {
-        oscillatorsWindow.SetStates(wf, level, octave, detune);
+        oscillatorsWindow.SetStateWithIndex(i, wf, level, octave, detune);
     }
 
     void SetNoteFreq(float freq)

@@ -46,7 +46,7 @@ private:
 public:
     virtual void RenderWindow();
 
-    void SetStates(int wf, float level, int octave, float detune);
+    void SetStateWithIndex(int i, int wf, float level, int octave, float detune);
 
     OscillatorsWindow();
 

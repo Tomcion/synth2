@@ -32,7 +32,7 @@ void Synth2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
 				auto detuneValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_detune");
 				auto waveformValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_waveform");
 				auto octaveValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_octave");
-				voice->SetOscillators(
+				voice->SetOscillatorWithIndex(j - 1,
                     waveformValue->load(),
                     levelValue->load(),
                     octaveValue->load(),
