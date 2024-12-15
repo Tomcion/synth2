@@ -36,6 +36,7 @@ public:
     {
         timeStep = 1 / (double)getSampleRate();
 
+        // Initializtion parameters don't matter here (they will be overriden anyway)
 		Oscillator* osc1 = new Oscillator(1, SAWTOOTH, 0.31f, 1);
 		oscillatorsWindow.AddOscillator(osc1);
 
@@ -43,12 +44,20 @@ public:
 		oscillatorsWindow.AddOscillator(osc2);
 
 		Oscillator* osc3 = new Oscillator(3, NOISE, 0.03f, 3);
-		oscillatorsWindow.AddOscillator(osc3); 
+		oscillatorsWindow.AddOscillator(osc3);
+
+        masterEnvelope = new Envelope(0.0f, 0.3f, 0.5f, 0.3f);
+
     }
 
     void SetOscillatorWithIndex(int i, int wf, float level, int octave, float detune)
     {
         oscillatorsWindow.SetStateWithIndex(i, wf, level, octave, detune);
+    }
+
+    void SetMasterEnvelope(float attack, float decay, float sustain, float release)
+    {
+        masterEnvelope->SetState(attack, decay, sustain, release);
     }
 
     void SetNoteFreq(float freq)
@@ -58,19 +67,20 @@ public:
     
     void SetNoteOnTime(double time)
     {
-        envelopesWindow.SetNoteOnTime(time);
+        //envelopesWindow.SetNoteOnTime(time);
+        masterEnvelope->SetNoteOnTime(time);
     }
 
     void SetNoteOffTime(double time)
     {
-        envelopesWindow.SetNoteOffTime(time);
-    }
+        //envelopesWindow.SetNoteOffTime(time);
+        masterEnvelope->SetNoteOffTime(time);
+    } 
 
     double MixSound(double time)
     {
         double output = oscillatorsWindow.MixOscillators(time);
-        //double output = oscillatorsWindow.MixOscillators(time);
-        //output *= masterEnvelope->CalcAutomation(time);
+        output *= masterEnvelope->CalcAutomation(time);
         //output = filter->process(output);
         //output = saturator->Saturate(output);
         return output;
@@ -92,7 +102,7 @@ public:
 
     void stopNote(float /*velocity*/, bool allowTailOff) override
     {
-        SetNoteOnTime(this->time);
+        SetNoteOffTime(this->time);
         level = 0.0f;
 		clearCurrentNote();
     }
@@ -104,7 +114,7 @@ public:
     {
 		while (--numSamples >= 0)
 		{
-            float currentSample = level * MixSound(time);
+            float currentSample = MixSound(time);
 
 			for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
 				outputBuffer.addSample (i, startSample, currentSample);

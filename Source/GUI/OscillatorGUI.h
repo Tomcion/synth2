@@ -1,5 +1,6 @@
 #include <JuceHeader.h>
 #include "../PluginProcessor.h"
+#include "Knob.h"
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
 typedef juce::AudioProcessorValueTreeState::ComboBoxAttachment ComboBoxAttachment;
@@ -14,16 +15,25 @@ public:
 	OscillatorGUI(Synth2AudioProcessor& p, int id)
 		: processor(p), id(id),
 		waveformPanel(p, juce::Colours::transparentBlack, id),
-		detunePanel(p, juce::Colours::transparentBlack, id),
-		octavePanel(p, juce::Colours::transparentBlack, id),
-		levelPanel(p, juce::Colours::transparentBlack, id)
+		detunePanel(p, juce::Colours::transparentBlack,
+			-1.0f, 1.0f, 0.01f, 0.0f,
+			"Detune", "osc" + juce::String(id) + "_detune"
+		),
+		octavePanel(p, juce::Colours::transparentBlack,
+			-3, 3, 1, 0,
+			"Octave", "osc" + juce::String(id) + "_octave"
+		),
+		levelPanel(p, juce::Colours::transparentBlack,
+			0.0f, 1.0f, 0.01f, 0.5f,
+			"Level", "osc" + juce::String(id) + "_level"
+		)
 	{
 		setSize(250, 200);
 
-		addAndMakeVisible(waveformPanel);
-		addAndMakeVisible(levelPanel); 
-		addAndMakeVisible(octavePanel); 
-		addAndMakeVisible(detunePanel); 
+		addAndMakeVisible(&waveformPanel);
+		addAndMakeVisible(&levelPanel); 
+		addAndMakeVisible(&octavePanel); 
+		addAndMakeVisible(&detunePanel); 
 	}
 
 	void paint(juce::Graphics& g) override
@@ -81,144 +91,14 @@ private:
 		juce::ComboBox waveformComboBox;
 		juce::Label waveformLabel; 
 		std::unique_ptr<ComboBoxAttachment> waveformAttachment; 
-	};
-
-	struct DetunePanel : public juce::Component
-	{
-		DetunePanel(Synth2AudioProcessor& p, juce::Colour c, int id)
-			: backgroundColour(c), processor(p), oscId(id)
-
-		{ 
-			detuneLabel.setText("Detune: ", juce::dontSendNotification);
-			//detuneLabel.attachToComponent(&detuneSlider, false);
-			addAndMakeVisible(&detuneLabel);
-
-			detuneSlider.setSliderStyle (juce::Slider::LinearBarVertical);
-			detuneSlider.setRange (-1.0, 1.0, 0.05);
-			detuneSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
-			detuneSlider.setPopupDisplayEnabled (true, false, this);
-			detuneSlider.setTextValueSuffix (" Detune");
-			detuneSlider.setValue(1.0);
-			addAndMakeVisible(&detuneSlider); 
-			
-			juce::String paramId = "osc" + juce::String(id) + "_detune";
-			detuneAttachment.reset(new SliderAttachment(processor.parameters, paramId, detuneSlider));
-		}
-
-		void paint(juce::Graphics& g) override
-		{
-			g.fillAll(backgroundColour);
-		}
-
-		void resized() override
-		{
-			//auto bounds = getLocalBounds();
-			detuneLabel.setBounds(20, 20, 75, 20);
-			detuneSlider.setBounds(20, 40, 20, 70);
-		}
-
-		int oscId;
-
-		Synth2AudioProcessor& processor;
-
-		juce::Colour backgroundColour;
-		juce::Slider detuneSlider;
-		juce::Label detuneLabel;
-		std::unique_ptr<SliderAttachment> detuneAttachment;
-	};
-
-	struct LevelPanel : public juce::Component
-	{
-		LevelPanel(Synth2AudioProcessor& p, juce::Colour c, int id)
-			: backgroundColour(c), processor(p), oscId(id)
-		{ 
-			levelSlider.setSliderStyle (juce::Slider::LinearBarVertical);
-			levelSlider.setRange (0.0, 1.0, 0.05);
-			levelSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
-			levelSlider.setPopupDisplayEnabled (true, false, this);
-			levelSlider.setTextValueSuffix (" Volume");
-			levelSlider.setValue(1.0);
-			addAndMakeVisible(&levelSlider);
-
-			levelLabel.setText("Volume: ", juce::dontSendNotification);
-			//levelLabel.attachToComponent(&levelSlider, false);
-			addAndMakeVisible(&levelLabel);
-
-			juce::String paramId = "osc" + juce::String(id) + "_level";
-			levelAttachment.reset(new SliderAttachment(processor.parameters, paramId, levelSlider));
-		}
-
-		void paint(juce::Graphics& g) override
-		{
-			g.fillAll(backgroundColour);
-		}
-
-		void resized() override
-		{
-			//auto bounds = getLocalBounds();
-			levelLabel.setBounds(20, 20, 75, 20);
-			levelSlider.setBounds(20, 40, 20, 70);
-		}
-
-		int oscId;
-
-		Synth2AudioProcessor& processor;
-
-		juce::Colour backgroundColour;
-		juce::Slider levelSlider;
-		juce::Label levelLabel;
-		std::unique_ptr<SliderAttachment> levelAttachment;
-	};
-
-	struct OctavePanel : public juce::Component
-	{
-		OctavePanel(Synth2AudioProcessor& p, juce::Colour c, int id)
-			: backgroundColour(c), processor(p), oscId(id)
-		{ 
-			octaveSlider.setSliderStyle (juce::Slider::LinearBarVertical);
-			octaveSlider.setRange (-3, 0, 3);
-			octaveSlider.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
-			octaveSlider.setPopupDisplayEnabled (true, false, this);
-			octaveSlider.setTextValueSuffix (" Octave");
-			octaveSlider.setValue(3);
-			addAndMakeVisible(&octaveSlider);
-
-			octaveLabel.setText("Octave: ", juce::dontSendNotification);
-			//levelLabel.attachToComponent(&levelSlider, false);
-			addAndMakeVisible(&octaveLabel);
-
-			juce::String paramId = "osc" + juce::String(id) + "_octave";
-			octaveAttachment.reset(new SliderAttachment(processor.parameters, paramId, octaveSlider));
-		}
-
-		void paint(juce::Graphics& g) override
-		{
-			g.fillAll(backgroundColour);
-		}
-
-		void resized() override
-		{
-			//auto bounds = getLocalBounds();
-			octaveLabel.setBounds(20, 20, 75, 20);
-			octaveSlider.setBounds(20, 40, 20, 70);
-		}
-
-		int oscId;
-
-		Synth2AudioProcessor& processor;
-
-		juce::Colour backgroundColour;
-		juce::Slider octaveSlider;
-		juce::Label octaveLabel;
-		std::unique_ptr<SliderAttachment> octaveAttachment;
-	};
+	}; 
 
 	Synth2AudioProcessor& processor;
 
 	WaveformPanel waveformPanel;
-	DetunePanel detunePanel; 
-	LevelPanel levelPanel; 
-	OctavePanel octavePanel; 
+	Knob detunePanel; 
+	Knob levelPanel; 
+	Knob octavePanel; 
  
 	//JUCE_DECLARE_NON_COPYABLE_WITH_LEAK_DETECTOR(OscillatorGUI);
 };

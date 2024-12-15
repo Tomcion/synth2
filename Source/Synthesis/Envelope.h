@@ -20,6 +20,8 @@ private:
 
 public:
     Envelope(float attack, float decay, float sustain, float release);
+
+    void SetState(float attack, float decay, float sustain, float release);
     
     void RenderEnvelope(); 
 

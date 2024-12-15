@@ -39,6 +39,22 @@ void Synth2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
                     detuneValue->load()
                 );
             }
+			auto masterAttackValue = parameters.getRawParameterValue("master_env_attack");
+			auto masterDecayValue = parameters.getRawParameterValue("master_env_decay");
+			auto masterSustainValue = parameters.getRawParameterValue("master_env_decay");
+			auto masterReleaseValue = parameters.getRawParameterValue("master_env_release");
+			voice->SetMasterEnvelope(
+				masterAttackValue->load(),
+				masterDecayValue->load(),
+				masterSustainValue->load(),
+				masterReleaseValue->load()
+			);
+			//voice->SetMasterEnvelope(
+				//masterAttackValue->load();
+				//masterDecayValue->load();
+				//masterSustainValue->load();
+                //masterReleaseValue->load();
+			//);
         }
     }
 
@@ -76,6 +92,30 @@ juce::AudioProcessorValueTreeState::ParameterLayout Synth2AudioProcessor::create
             1, 5, 1
         ));
     }
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        "master_env_attack",
+        "Master Envelope Attack",
+		0.0f, 7.0f, 0.3f
+	));
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        "master_env_decay",
+        "Master Envelope Decay",
+		0.0f, 7.0f, 0.3f
+	));
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        "master_env_decay",
+        "Master Envelope Sustain",
+		0.0f, 1.0f, 0.5f
+	));
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        "master_env_release",
+        "Master Envelope release",
+		0.0f, 7.0f, 0.3f
+	));
 
     return params;
 }

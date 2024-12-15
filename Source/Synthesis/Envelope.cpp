@@ -33,6 +33,14 @@ Envelope::Envelope(float attack, float decay, float sustain, float release)
     noteOffTime = 0.0f;
 }
 
+void Envelope::SetState(float attack, float decay, float sustain, float release)
+{
+    this->attack = attack;
+    this->decay = decay;
+    this->sustain = sustain;
+    this->release = release;
+}
+
 float Envelope::CalcAutomation(double time)
 { 
     return ProcessNoteOn(time) * ProcessNoteOff(time);
