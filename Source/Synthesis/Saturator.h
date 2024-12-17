@@ -22,6 +22,13 @@ public:
         return input;
     }
 
+    void SetState(bool enabled, float drive, float output)
+    {
+        this->enabled = true;
+        this->drive = drive;
+        this->outputVolume = output;
+    }
+
     void Render()
     { 
         //ImGui::Begin("Saturator");

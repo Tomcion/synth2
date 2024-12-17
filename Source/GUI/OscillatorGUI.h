@@ -1,5 +1,6 @@
 #include <JuceHeader.h>
 #include "../PluginProcessor.h"
+#include "../paramNames.h"
 #include "Knob.h"
 
 typedef juce::AudioProcessorValueTreeState::SliderAttachment SliderAttachment;
@@ -67,7 +68,7 @@ private:
 			waveformComboBox.setSelectedItemIndex(1);
 			addAndMakeVisible(&waveformComboBox); 
 
-			juce::String paramId = "osc" + juce::String(id) + "_waveform";
+			juce::String paramId = PARAMS_OSC_WAVETYPE(id);
 			waveformAttachment.reset(new ComboBoxAttachment(processor.parameters, paramId, waveformComboBox));
 		}
 

@@ -1,6 +1,8 @@
 #include "PluginProcessor.h"
 #include "PluginEditor.h"
 
+#include "paramNames.h"
+
 
 Synth2AudioProcessor::Synth2AudioProcessor()
 	: AudioProcessor (BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
@@ -13,8 +15,7 @@ Synth2AudioProcessor::Synth2AudioProcessor()
     }
     synth.clearSounds();
     synth.addSound(new CustomSynthSound());
-}
-
+} 
 
 Synth2AudioProcessor::~Synth2AudioProcessor()
 { 
@@ -28,10 +29,10 @@ void Synth2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
         {
             for (int j = 1; j <= numberOfOscs; j++)
             {
-				auto levelValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_level");
-				auto detuneValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_detune");
-				auto waveformValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_waveform");
-				auto octaveValue = parameters.getRawParameterValue("osc" + juce::String(j) + "_octave");
+				auto levelValue = parameters.getRawParameterValue(PARAMS_OSC_LEVEL(j));
+				auto detuneValue = parameters.getRawParameterValue(PARAMS_OSC_DETUNE(j));
+				auto waveformValue = parameters.getRawParameterValue(PARAMS_OSC_WAVETYPE(j));
+				auto octaveValue = parameters.getRawParameterValue(PARAMS_OSC_OCTAVE(j));
 				voice->SetOscillatorWithIndex(j - 1,
                     waveformValue->load(),
                     levelValue->load(),
@@ -39,22 +40,33 @@ void Synth2AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
                     detuneValue->load()
                 );
             }
-			auto masterAttackValue = parameters.getRawParameterValue("master_env_attack");
-			auto masterDecayValue = parameters.getRawParameterValue("master_env_decay");
-			auto masterSustainValue = parameters.getRawParameterValue("master_env_decay");
-			auto masterReleaseValue = parameters.getRawParameterValue("master_env_release");
+
+			auto masterAttackValue = parameters.getRawParameterValue(PARAMS_MASTER_ENV_ATTACK);
+			auto masterDecayValue = parameters.getRawParameterValue(PARAMS_MASTER_ENV_DECAY);
+			auto masterSustainValue = parameters.getRawParameterValue(PARAMS_MASTER_ENV_SUSTAIN);
+			auto masterReleaseValue = parameters.getRawParameterValue(PARAMS_MASTER_ENV_RELEASE);
 			voice->SetMasterEnvelope(
 				masterAttackValue->load(),
 				masterDecayValue->load(),
 				masterSustainValue->load(),
 				masterReleaseValue->load()
 			);
-			//voice->SetMasterEnvelope(
-				//masterAttackValue->load();
-				//masterDecayValue->load();
-				//masterSustainValue->load();
-                //masterReleaseValue->load();
-			//);
+
+			auto lowpassCutoffValue = parameters.getRawParameterValue(PARAMS_LOWPASS_CUTOFF);
+			auto lowpassResValue = parameters.getRawParameterValue(PARAMS_LOWPASS_RESONANCE);
+			voice->SetLowPassFilter(
+				lowpassCutoffValue->load(),
+				lowpassResValue->load()
+			);
+            
+			auto saturatorDriveValue = parameters.getRawParameterValue(PARAMS_SATURATOR_DRIVE);
+			auto saturatorOutputValue = parameters.getRawParameterValue(PARAMS_SATURATOR_OUTPUT);
+			auto saturatorEnabledValue = parameters.getRawParameterValue(PARAMS_SATURATOR_ENABLED);
+			voice->SetSaturator(
+				saturatorEnabledValue->load(),
+				saturatorDriveValue->load(),
+				saturatorOutputValue->load()
+			);
         }
     }
 
@@ -69,52 +81,82 @@ juce::AudioProcessorValueTreeState::ParameterLayout Synth2AudioProcessor::create
     for (int i = 1; i <= numberOfOscs; i++)
     {
         params.add(std::make_unique<juce::AudioParameterFloat>(
-            "osc" + juce::String(i) + "_level",
+            PARAMS_OSC_LEVEL(i),
             "Oscillator " + juce::String(i) + " Level",
             0.0f, 1.0f, 0.5f
         ));
 
         params.add(std::make_unique<juce::AudioParameterFloat>(
-            "osc" + juce::String(i) + "_detune",
+            PARAMS_OSC_DETUNE(i),
             "Oscillator " + juce::String(i) + " Detune",
             -1.0f, 1.0f, 0.0f
         ));
 
         params.add(std::make_unique<juce::AudioParameterInt>(
-            "osc" + juce::String(i) + "_octave",
+            PARAMS_OSC_OCTAVE(i),
             "Oscillator " + juce::String(i) + " Octave",
             -3, 3, 0
         ));
 
         params.add(std::make_unique<juce::AudioParameterInt>(
-            "osc" + juce::String(i) + "_waveform",
+            PARAMS_OSC_WAVETYPE(i),
             "Oscillator " + juce::String(i) + " Waveform",
             1, 5, 1
         ));
     }
 
 	params.add(std::make_unique<juce::AudioParameterFloat>(
-        "master_env_attack",
+		PARAMS_MASTER_ENV_ATTACK,
         "Master Envelope Attack",
 		0.0f, 7.0f, 0.3f
 	));
 
 	params.add(std::make_unique<juce::AudioParameterFloat>(
-        "master_env_decay",
+		PARAMS_MASTER_ENV_DECAY,
         "Master Envelope Decay",
 		0.0f, 7.0f, 0.3f
 	));
 
 	params.add(std::make_unique<juce::AudioParameterFloat>(
-        "master_env_decay",
+        PARAMS_MASTER_ENV_SUSTAIN,
         "Master Envelope Sustain",
 		0.0f, 1.0f, 0.5f
 	));
 
 	params.add(std::make_unique<juce::AudioParameterFloat>(
-        "master_env_release",
+		PARAMS_MASTER_ENV_RELEASE,
         "Master Envelope release",
 		0.0f, 7.0f, 0.3f
+	));
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        PARAMS_LOWPASS_CUTOFF,
+        "Low Pass Cutoff",
+		0.0f, 1.0f, 0.3f
+	));
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        PARAMS_LOWPASS_RESONANCE,
+        "Low Pass Resonance",
+		0.0f, 5.0f, 0.3f
+	));
+
+	params.add(std::make_unique<juce::AudioParameterBool>(
+        PARAMS_SATURATOR_ENABLED,
+        "Saturator Enabled",
+        true
+	));
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        PARAMS_SATURATOR_DRIVE,
+        "Saturator Drive",
+		0.0f, 30.0f, 10.0f
+	));
+
+	params.add(std::make_unique<juce::AudioParameterFloat>(
+        PARAMS_SATURATOR_OUTPUT, 
+        "Saturator Output",
+		0.0f, 1.0f, 0.5f
 	));
 
     return params;

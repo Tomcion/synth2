@@ -5,6 +5,7 @@
               companyName="TymiDymi" pluginFormats="buildAU,buildStandalone,buildVST,buildVST3">
   <MAINGROUP id="r5XWUq" name="synth2">
     <GROUP id="{1D0DBD7D-650B-8D78-9A08-184F182B940B}" name="Source">
+      <FILE id="sH6yNR" name="paramNames.h" compile="0" resource="0" file="Source/paramNames.h"/>
       <GROUP id="{9A9724BF-D89F-00DD-2B12-039639A84053}" name="GUI">
         <FILE id="Z2spHR" name="EnvelopeGUI.h" compile="0" resource="0" file="Source/GUI/EnvelopeGUI.h"/>
         <FILE id="AphtY0" name="FilterGUI.h" compile="0" resource="0" file="Source/GUI/FilterGUI.h"/>

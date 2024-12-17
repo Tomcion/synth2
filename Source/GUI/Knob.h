@@ -26,8 +26,9 @@ public:
 		displayName(displayName), parameterName(parameterName)
 	{ 
 		slider.setSliderStyle (juce::Slider::LinearBarVertical);
+		//slider.setSliderStyle (juce::Slider::Rotary);
 		slider.setRange (minVal, maxVal, interval);
-		slider.setTextBoxStyle (juce::Slider::NoTextBox, false, 90, 0);
+		slider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
 		slider.setPopupDisplayEnabled (true, false, this);
 		slider.setTextValueSuffix (" " + displayName);
 		slider.setValue(defaultValue);

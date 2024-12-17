@@ -48,6 +48,10 @@ public:
 
         masterEnvelope = new Envelope(0.0f, 0.3f, 0.5f, 0.3f);
 
+		filter = new Biquad();
+		filter->setBiquad(bq_type_lowpass, 0.04, 3.55, 0);
+ 
+		saturator = new Saturator(10.0f, 0.36f, true);
     }
 
     void SetOscillatorWithIndex(int i, int wf, float level, int octave, float detune)
@@ -58,6 +62,17 @@ public:
     void SetMasterEnvelope(float attack, float decay, float sustain, float release)
     {
         masterEnvelope->SetState(attack, decay, sustain, release);
+    }
+
+    void SetSaturator(bool enabled, float drive, float output)
+    {
+        saturator->SetState(enabled, drive, output);
+    }
+
+    void SetLowPassFilter(float cutoff, float resonance)
+    {
+        filter->setFc(cutoff);
+        filter->setQ(resonance);
     }
 
     void SetNoteFreq(float freq)
@@ -81,8 +96,8 @@ public:
     {
         double output = oscillatorsWindow.MixOscillators(time);
         output *= masterEnvelope->CalcAutomation(time);
-        //output = filter->process(output);
-        //output = saturator->Saturate(output);
+        //output = filter->process(output); // filter nie dziala ciagle bo sie odswierza za czesto (chyba)
+        output = saturator->Saturate(output);
         return output;
     }
 
