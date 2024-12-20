@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<JUCERPROJECT id="gmJLzU" name="Synth3" projectType="audioplug" useAppConfig="0"
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+  <MAINGROUP id="vhlEEF" name="Synth3">
+    <GROUP id="{85DF9E92-CD22-471E-851F-B039B3F8526F}" name="Source">
+      <GROUP id="{0D19F2BA-A69C-6576-8F2D-13733D79CB5C}" name="GUI">
+        <FILE id="PuqAj8" name="EnvelopeGUI.h" compile="0" resource="0" file="Source/GUI/EnvelopeGUI.h"/>
+        <FILE id="TLecRL" name="FilterGUI.h" compile="0" resource="0" file="Source/GUI/FilterGUI.h"/>
+        <FILE id="dF18DL" name="Knob.h" compile="0" resource="0" file="Source/GUI/Knob.h"/>
+        <FILE id="o9TrdG" name="LFOGUI.h" compile="0" resource="0" file="Source/GUI/LFOGUI.h"/>
+        <FILE id="TFM1m0" name="OscillatorGUI.h" compile="0" resource="0" file="Source/GUI/OscillatorGUI.h"/>
+        <FILE id="o5kM2s" name="SaturatorGUI.h" compile="0" resource="0" file="Source/GUI/SaturatorGUI.h"/>
+      </GROUP>
+      <GROUP id="{AFA75950-F5E9-3F77-CD87-C74ECC4FAD61}" name="Synthesis">
+        <FILE id="qGNW2l" name="Envelope.cpp" compile="1" resource="0" file="Source/Synthesis/Envelope.cpp"/>
+        <FILE id="CDltc6" name="Envelope.h" compile="0" resource="0" file="Source/Synthesis/Envelope.h"/>
+        <FILE id="tj9Eo5" name="Filter.cpp" compile="1" resource="0" file="Source/Synthesis/Filter.cpp"/>
+        <FILE id="fFs57B" name="Filter.h" compile="0" resource="0" file="Source/Synthesis/Filter.h"/>
+        <FILE id="zleEpV" name="LFO.cpp" compile="1" resource="0" file="Source/Synthesis/LFO.cpp"/>
+        <FILE id="JKQaQC" name="LFO.h" compile="0" resource="0" file="Source/Synthesis/LFO.h"/>
+        <FILE id="RcWlAa" name="MasterWindow.cpp" compile="1" resource="0"
+              file="Source/Synthesis/MasterWindow.cpp"/>
+        <FILE id="TK0xIM" name="MasterWindow.h" compile="0" resource="0" file="Source/Synthesis/MasterWindow.h"/>
+        <FILE id="V5Ta2R" name="ModulableField.cpp" compile="1" resource="0"
+              file="Source/Synthesis/ModulableField.cpp"/>
+        <FILE id="QWfMgM" name="ModulableField.h" compile="0" resource="0"
+              file="Source/Synthesis/ModulableField.h"/>
+        <FILE id="Imjj9t" name="Oscillator.cpp" compile="1" resource="0" file="Source/Synthesis/Oscillator.cpp"/>
+        <FILE id="JvDP2G" name="Oscillator.h" compile="0" resource="0" file="Source/Synthesis/Oscillator.h"/>
+        <FILE id="CALFeS" name="ParameterAutomator.cpp" compile="1" resource="0"
+              file="Source/Synthesis/ParameterAutomator.cpp"/>
+        <FILE id="kTyTEj" name="ParameterAutomator.h" compile="0" resource="0"
+              file="Source/Synthesis/ParameterAutomator.h"/>
+        <FILE id="WXeOOV" name="Saturator.cpp" compile="1" resource="0" file="Source/Synthesis/Saturator.cpp"/>
+        <FILE id="D9WNRf" name="Saturator.h" compile="0" resource="0" file="Source/Synthesis/Saturator.h"/>
+        <FILE id="hvZgJ7" name="WaveGenerator.cpp" compile="1" resource="0"
+              file="Source/Synthesis/WaveGenerator.cpp"/>
+        <FILE id="psBZIm" name="WaveGenerator.h" compile="0" resource="0" file="Source/Synthesis/WaveGenerator.h"/>
+        <FILE id="eHJK5W" name="WindowSection.h" compile="0" resource="0" file="Source/Synthesis/WindowSection.h"/>
+      </GROUP>
+      <FILE id="kU5Am6" name="paramNames.h" compile="0" resource="0" file="Source/paramNames.h"/>
+      <FILE id="OIs0Ks" name="Synthesizer.h" compile="0" resource="0" file="Source/Synthesizer.h"/>
+      <FILE id="QolWuU" name="PluginProcessor.cpp" compile="1" resource="0"
+            file="Source/PluginProcessor.cpp"/>
+      <FILE id="afYlSr" name="PluginProcessor.h" compile="0" resource="0"
+            file="Source/PluginProcessor.h"/>
+      <FILE id="My0RAy" name="PluginEditor.cpp" compile="1" resource="0"
+            file="Source/PluginEditor.cpp"/>
+      <FILE id="zFHP75" name="PluginEditor.h" compile="0" resource="0" file="Source/PluginEditor.h"/>
+    </GROUP>
+  </MAINGROUP>
+  <MODULES>
+    <MODULE id="juce_audio_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_devices" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_formats" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_plugin_client" showAllCode="1" useLocalCopy="0"
+            useGlobalPath="1"/>
+    <MODULE id="juce_audio_processors" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_audio_utils" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_core" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_data_structures" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_events" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_graphics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_basics" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+    <MODULE id="juce_gui_extra" showAllCode="1" useLocalCopy="0" useGlobalPath="1"/>
+  </MODULES>
+  <JUCEOPTIONS JUCE_STRICT_REFCOUNTEDPOINTER="1" JUCE_VST3_CAN_REPLACE_VST2="0"/>
+  <EXPORTFORMATS>
+    <VS2022 targetFolder="Builds/VisualStudio2022">
+      <CONFIGURATIONS>
+        <CONFIGURATION isDebug="1" name="Debug" targetName="Synth3"/>
+        <CONFIGURATION isDebug="0" name="Release" targetName="Synth3"/>
+      </CONFIGURATIONS>
+      <MODULEPATHS>
+        <MODULEPATH id="juce_audio_basics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_devices" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_formats" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_plugin_client" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_processors" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_audio_utils" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_core" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_data_structures" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_events" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_graphics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_basics" path="../../../../JUCE/modules"/>
+        <MODULEPATH id="juce_gui_extra" path="../../../../JUCE/modules"/>
+      </MODULEPATHS>
+    </VS2022>
+  </EXPORTFORMATS>
+</JUCERPROJECT>
