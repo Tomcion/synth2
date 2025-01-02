@@ -5,7 +5,8 @@
 
 
 Synth3AudioProcessor::Synth3AudioProcessor()
-	: AudioProcessor (BusesProperties().withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
+	: AudioProcessor (BusesProperties()
+        .withOutput ("Output", juce::AudioChannelSet::stereo(), true)),
     parameters(*this, nullptr, juce::Identifier("Synth2"), createParameterLayout())
 {
     synth.clearVoices();
@@ -264,8 +265,8 @@ void Synth3AudioProcessor::getStateInformation(juce::MemoryBlock& destData)
 	auto state = parameters.copyState();
 	std::unique_ptr<juce::XmlElement> xml(state.createXml());
 
-	juce::File /*file = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("state1.xml");
-	file.replace*/WithText(xml->toString());
+	//juce::File file = juce::File::getSpecialLocation(juce::File::userDocumentsDirectory).getChildFile("state1.xml");
+	//file.replaceWithText(xml->toString());
 
 	copyXmlToBinary (*xml, destData);
 }

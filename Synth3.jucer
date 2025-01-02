@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <JUCERPROJECT id="gmJLzU" name="Synth3" projectType="audioplug" useAppConfig="0"
-              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1">
+              addUsingNamespaceToJuceHeader="0" jucerFormatVersion="1" pluginManufacturer="tymidymi"
+              pluginName="synthesizer" pluginDesc="synth" pluginVST3Category="Synth"
+              pluginVSTCategory="kPlugCategUnknown" pluginCharacteristicsValue="pluginIsSynth,pluginWantsMidiIn">
   <MAINGROUP id="vhlEEF" name="Synth3">
     <GROUP id="{85DF9E92-CD22-471E-851F-B039B3F8526F}" name="Source">
       <GROUP id="{0D19F2BA-A69C-6576-8F2D-13733D79CB5C}" name="GUI">
@@ -69,8 +71,8 @@
   <EXPORTFORMATS>
     <VS2022 targetFolder="Builds/VisualStudio2022">
       <CONFIGURATIONS>
-        <CONFIGURATION isDebug="1" name="Debug" targetName="Synth3"/>
-        <CONFIGURATION isDebug="0" name="Release" targetName="Synth3"/>
+        <CONFIGURATION isDebug="0" name="Debug" targetName="Synth3"/>
+        <CONFIGURATION isDebug="1" name="Release" targetName="Synth3"/>
       </CONFIGURATIONS>
       <MODULEPATHS>
         <MODULEPATH id="juce_audio_basics" path="../../../../JUCE/modules"/>
