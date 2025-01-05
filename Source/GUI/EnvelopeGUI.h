@@ -33,6 +33,9 @@ public:
 	{
 		setSize(300, 150);
 
+		titleLabel.setText(labelText, juce::dontSendNotification);
+		addAndMakeVisible(&titleLabel);
+
 		addAndMakeVisible(&attackPanel);
 		addAndMakeVisible(&decayPanel);
 		addAndMakeVisible(&sustainPanel);
@@ -42,6 +45,7 @@ public:
 	void resized() override
 	{
 		auto area = getLocalBounds();
+		titleLabel.setBounds(area.removeFromTop(20));
 		attackPanel.setBounds(area.removeFromLeft(80));
 		decayPanel.setBounds(area.removeFromLeft(80));
 		sustainPanel.setBounds(area.removeFromLeft(80));
@@ -51,6 +55,9 @@ public:
 private: 
 
 	Synth3AudioProcessor& processor; 
+
+	juce::String labelText = "Envelope";
+	juce::Label titleLabel;
 
 	Knob attackPanel;
 	Knob decayPanel;

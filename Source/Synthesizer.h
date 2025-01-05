@@ -8,7 +8,7 @@
 #include "Synthesis/Saturator.h"
 #include "Synthesis/Filter.h"
  
-class CustomSynthSound   : public juce::SynthesiserSound
+class CustomSynthSound : public juce::SynthesiserSound
 {
 public:
     CustomSynthSound() {}
@@ -29,6 +29,9 @@ class CustomSynthVoice : public juce::SynthesiserVoice
 { 
 private:
     double frequencyHz = 0.0f, level = 0.0f, time = 0.0f, timeStep, newSample = 0.0f;
+    int id;
+
+    juce::Synthesiser& synth;
     
     OscillatorsWindow oscillatorsWindow;
     EnvelopesWindow envelopesWindow;
@@ -43,7 +46,8 @@ private:
     //juce::dsp::ProcessorChain<juce::dsp::LadderFilter<float>> processorChain;
 
 public:
-    CustomSynthVoice()
+    CustomSynthVoice(juce::Synthesiser& synthesiser, int id)
+        : synth(synthesiser), id(id)
     {
         timeStep = 1 / (double)getSampleRate();
 
@@ -139,8 +143,8 @@ public:
     {
         double output = oscillatorsWindow.MixOscillators(time);
         output *= masterEnvelope->CalcAutomation(time);
-        if (output == 0.0f)
-            clearCurrentNote();
+        //if (output == 0.0f)
+        //    clearCurrentNote();
 
         output = filter->process(output); // filter nie dziala ciagle bo sie odswierza za czesto (chyba)
         output = saturator->Saturate(output);
@@ -157,7 +161,24 @@ public:
     { 
         frequencyHz = (double)juce::MidiMessage::getMidiNoteInHertz (midiNoteNumber);
         SetNoteFreq(frequencyHz);
-        level = 1.0f;
+        //level = 1.0f;
+
+    //    CustomSynthVoice* voice;
+    //    DBG(midiNoteNumber);
+    //    for (int i = 0; i < synth.getNumVoices(); i++)
+    //    {
+    //        if (voice = dynamic_cast<CustomSynthVoice*>(synth.getVoice(i)))
+    //        { 
+				//DBG(juce::String(voice->id) + " " + juce::String(this->id) + " " + juce::String((int)(voice->id != this->id)) + " " + juce::String((int)(midiNoteNumber == voice->getCurrentlyPlayingNote())));
+    //            if (midiNoteNumber == voice->getCurrentlyPlayingNote()
+    //                && voice->id != this->id)
+    //            {
+    //                voice->clearCurrentNote();
+    //                break;
+    //            }
+    //        }
+    //    }
+
         SetNoteOnTime(this->time);
     }
 

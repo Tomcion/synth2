@@ -24,13 +24,17 @@ public:
 	{
 		setSize(150, 150);
 
+		titleLabel.setText(labelText, juce::dontSendNotification);
+		addAndMakeVisible(&titleLabel);
+
 		addAndMakeVisible(&cutoffPanel);
 		addAndMakeVisible(&resonancePanel);
 	}
 
-		void resized() override
+	void resized() override
 	{
 		auto area = getLocalBounds();
+		titleLabel.setBounds(area.removeFromTop(20));
 		cutoffPanel.setBounds(area.removeFromLeft(80));
 		resonancePanel.setBounds(area.removeFromLeft(80));
 	}
@@ -38,6 +42,9 @@ public:
 private:
 
 	Synth3AudioProcessor& processor;
+
+	juce::String labelText = "LP Filter";
+	juce::Label titleLabel;
 
 	Knob cutoffPanel;
 	Knob resonancePanel; 

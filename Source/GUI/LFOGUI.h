@@ -23,6 +23,9 @@ public:
 		)
 	{
 		setSize(150, 150);
+		
+		titleLabel.setText(labelText, juce::dontSendNotification);
+		addAndMakeVisible(&titleLabel);
 
 		addAndMakeVisible(&amountPanel);
 		addAndMakeVisible(&freqPanel);
@@ -31,6 +34,7 @@ public:
 	void resized() override
 	{
 		auto area = getLocalBounds();
+		titleLabel.setBounds(area.removeFromTop(20));
 		amountPanel.setBounds(area.removeFromLeft(80));
 		freqPanel.setBounds(area.removeFromLeft(80));
 	}
@@ -38,6 +42,9 @@ public:
 private:
 
 	Synth3AudioProcessor& processor;
+
+	juce::String labelText = "Pitch LFO";
+	juce::Label titleLabel;
 
 	Knob amountPanel;
 	Knob freqPanel; 

@@ -24,6 +24,9 @@ public:
 	{
 		setSize(150, 150);
 
+		titleLabel.setText(labelText, juce::dontSendNotification);
+		addAndMakeVisible(&titleLabel);
+
 		addAndMakeVisible(&drivePanel);
 		addAndMakeVisible(&outputPanel);
 	}
@@ -31,6 +34,7 @@ public:
 	void resized() override
 	{
 		auto area = getLocalBounds();
+		titleLabel.setBounds(area.removeFromTop(20));
 		drivePanel.setBounds(area.removeFromLeft(80));
 		outputPanel.setBounds(area.removeFromLeft(80));
 	}
@@ -38,6 +42,9 @@ public:
 private:
 
 	Synth3AudioProcessor& processor;
+	
+	juce::String labelText = "Saturator";
+	juce::Label titleLabel;
 
 	Knob drivePanel;
 	Knob outputPanel; 

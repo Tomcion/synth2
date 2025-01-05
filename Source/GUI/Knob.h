@@ -31,6 +31,7 @@ public:
 		slider.setTextBoxStyle (juce::Slider::NoTextBox, false, 0, 0);
 		slider.setPopupDisplayEnabled (true, false, this);
 		slider.setTextValueSuffix (" " + displayName);
+		slider.setTextValueSuffix ("");
 		slider.setValue(defaultValue);
 		addAndMakeVisible(&slider);
 

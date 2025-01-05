@@ -12,14 +12,16 @@ Synth3AudioProcessor::Synth3AudioProcessor()
     synth.clearVoices();
     for (int i = 0; i < 8; ++i)
     {
-        synth.addVoice(new CustomSynthVoice());
+        synth.addVoice(new CustomSynthVoice(synth, i));
     }
     synth.clearSounds();
     synth.addSound(new CustomSynthSound());
+    //synth.setNoteStealingEnabled(0);
+    DBG("note stealing: " + juce::String((int)(synth.isNoteStealingEnabled())));
 } 
 
 Synth3AudioProcessor::~Synth3AudioProcessor()
-{ 
+{
 }
 
 void Synth3AudioProcessor::UpdateFilterForAllVoices()
