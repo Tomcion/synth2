@@ -13,15 +13,22 @@ class CustomSynthSound   : public juce::SynthesiserSound
 public:
     CustomSynthSound() {}
 
-    bool appliesToNote    (int) override        { return true; }
-    bool appliesToChannel (int) override        { return true; }
+    bool appliesToNote(int) override
+    {
+        return true;
+    }
+
+    bool appliesToChannel(int) override
+    {
+        return true;
+    }
 };
 
 
-class CustomSynthVoice   : public juce::SynthesiserVoice
+class CustomSynthVoice : public juce::SynthesiserVoice
 { 
 private:
-    double frequencyHz = 0.0f, level = 0.0f, time = 0.0f, timeStep;
+    double frequencyHz = 0.0f, level = 0.0f, time = 0.0f, timeStep, newSample = 0.0f;
     
     OscillatorsWindow oscillatorsWindow;
     EnvelopesWindow envelopesWindow;
@@ -32,6 +39,8 @@ private:
     Biquad* filter;
 
     PhaseLFO* phaseLFO;
+
+    //juce::dsp::ProcessorChain<juce::dsp::LadderFilter<float>> processorChain;
 
 public:
     CustomSynthVoice()
@@ -59,6 +68,11 @@ public:
         osc1->SetPhaseModulator(phaseLFO);
         osc2->SetPhaseModulator(phaseLFO);
         osc3->SetPhaseModulator(phaseLFO);
+
+        //auto& filter = processorChain.get<0>();
+        //filter.setCutoffFrequencyHz(500.0f);
+        //filter.setResonance(0.7f);
+        //filter.setMode(juce::dsp::LadderFilter<float>::Mode::LPF24);
     }
 
     ~CustomSynthVoice()
@@ -67,6 +81,15 @@ public:
         delete saturator;
         delete filter;
         delete phaseLFO;
+    }
+
+    void prepareToPlayVoice(double sampleRate, int samplesPerBlock, int numChannels)
+    {
+        //juce::dsp::ProcessSpec spec;
+        //spec.sampleRate = sampleRate;
+        //spec.maximumBlockSize = samplesPerBlock;
+        //spec.numChannels = numChannels;
+        //processorChain.prepare(spec);
     }
 
     void SetOscillatorWithIndex(int i, int wf, float level, int octave, float detune)
@@ -86,8 +109,8 @@ public:
 
     void SetLowPassFilter(float cutoff, float resonance)
     {
-        filter->setFc(cutoff);
-        filter->setQ(resonance);
+        //filter->setFc(cutoff);
+        //filter->setQ(resonance);
     }
 
     void SetPhaseLFO(float amount, float freq)
@@ -116,7 +139,10 @@ public:
     {
         double output = oscillatorsWindow.MixOscillators(time);
         output *= masterEnvelope->CalcAutomation(time);
-        //output = filter->process(output); // filter nie dziala ciagle bo sie odswierza za czesto (chyba)
+        if (output == 0.0f)
+            clearCurrentNote();
+
+        output = filter->process(output); // filter nie dziala ciagle bo sie odswierza za czesto (chyba)
         output = saturator->Saturate(output);
         return output;
     }
@@ -138,25 +164,41 @@ public:
     void stopNote(float /*velocity*/, bool allowTailOff) override
     {
         SetNoteOffTime(this->time);
-        level = 0.0f;
-		clearCurrentNote();
+        //level = 0.0f;
+		//clearCurrentNote();
     }
 
     void pitchWheelMoved(int) override      {}
     void controllerMoved(int, int) override {}
 
     void renderNextBlock(juce::AudioSampleBuffer& outputBuffer, int startSample, int numSamples) override
-    {
-		while (--numSamples >= 0)
-		{
-            float currentSample = MixSound(time);
+    { 
+        // mix oscillators
+        for (int i = 0; i < numSamples; i++)
+        {
+            newSample = MixSound(time);
 
-			for (auto i = outputBuffer.getNumChannels(); --i >= 0;)
-				outputBuffer.addSample (i, startSample, currentSample);
+			for (auto j = 0; j < outputBuffer.getNumChannels(); j++)
+				outputBuffer.addSample (j, startSample + i, newSample); 
 
-			++startSample;
-            time += timeStep;
-		}
+            time += timeStep; 
+        }
+
+        // apply filter
+        //juce::dsp::AudioBlock<float> audioBlock(outputBuffer);
+        //juce::dsp::ProcessContextReplacing<float> context(audioBlock); 
+        //processorChain.get<0>().process(context); 
+
+        // apply saturation
+        //for (int i = 0; i < numSamples; i++)
+        //{ 
+        //    for (auto j = 0; j < outputBuffer.getNumChannels(); j++)
+        //    {
+        //        newSample = outputBuffer.getSample(j, startSample + i);
+        //        outputBuffer.addSample(j, startSample + i, newSample);
+        //    }
+        //}
+        
     }
 };
 
