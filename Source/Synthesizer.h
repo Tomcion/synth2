@@ -109,8 +109,8 @@ public:
 
     void SetLowPassFilter(float cutoff, float resonance)
     {
-        //filter->setFc(cutoff);
-        //filter->setQ(resonance);
+        filter->setFc(cutoff);
+        filter->setQ(resonance);
     }
 
     void SetPhaseLFO(float amount, float freq)

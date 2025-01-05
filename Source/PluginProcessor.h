@@ -19,6 +19,7 @@ public:
    #endif
 
     void processBlock(juce::AudioBuffer<float>&, juce::MidiBuffer&) override;
+    void UpdateFilterForAllVoices();
 
     juce::AudioProcessorEditor* createEditor() override;
     bool hasEditor() const override;
