@@ -24,32 +24,8 @@ Synth3AudioProcessor::~Synth3AudioProcessor()
 {
 }
 
-void Synth3AudioProcessor::UpdateFilterForAllVoices()
-{
-    static float lowpassCutoffValue = 0.0f, lowpassResValue = 0.0f;
-
-	std::atomic<float>* newLowpassCutoffValue = parameters.getRawParameterValue(PARAMS_LOWPASS_CUTOFF);
-	std::atomic<float>* newLowpassResValue = parameters.getRawParameterValue(PARAMS_LOWPASS_RESONANCE);
-	if (newLowpassCutoffValue->load() != lowpassCutoffValue ||
-		newLowpassResValue->load() != lowpassResValue)
-	{
-        for (int i = 0; i < synth.getNumVoices(); i++)
-        {
-            if (voice = dynamic_cast<CustomSynthVoice*>(synth.getVoice(i)))
-            {
-                voice->SetLowPassFilter(
-                    newLowpassCutoffValue->load(),
-                    newLowpassResValue->load()
-                );
-            }
-        }
-	} 
-    lowpassCutoffValue = newLowpassCutoffValue->load();
-    lowpassResValue = newLowpassResValue->load();
-}
-
 void Synth3AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce::MidiBuffer& midiMessages)
-{ 
+{
     for (int i = 0; i < synth.getNumVoices(); i++)
     {
         if (voice = dynamic_cast<CustomSynthVoice*>(synth.getVoice(i)))
@@ -79,12 +55,12 @@ void Synth3AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
 				masterReleaseValue->load()
 			);
 
-			//auto lowpassCutoffValue = parameters.getRawParameterValue(PARAMS_LOWPASS_CUTOFF);
-			//auto lowpassResValue = parameters.getRawParameterValue(PARAMS_LOWPASS_RESONANCE);
-			//voice->SetLowPassFilter(
-			//	lowpassCutoffValue->load(),
-			//	lowpassResValue->load()
-			//);
+			auto lowpassCutoffValue = parameters.getRawParameterValue(PARAMS_LOWPASS_CUTOFF);
+			auto lowpassResValue = parameters.getRawParameterValue(PARAMS_LOWPASS_RESONANCE);
+			voice->SetLowPassFilter(
+				lowpassCutoffValue->load(),
+				lowpassResValue->load()
+			);
             
 			auto saturatorDriveValue = parameters.getRawParameterValue(PARAMS_SATURATOR_DRIVE);
 			auto saturatorOutputValue = parameters.getRawParameterValue(PARAMS_SATURATOR_OUTPUT);
@@ -103,8 +79,6 @@ void Synth3AudioProcessor::processBlock (juce::AudioBuffer<float>& buffer, juce:
 			);
         }
     }
-
-    UpdateFilterForAllVoices();
 
     buffer.clear();
     synth.renderNextBlock(buffer, midiMessages, 0, buffer.getNumSamples());
@@ -168,13 +142,13 @@ juce::AudioProcessorValueTreeState::ParameterLayout Synth3AudioProcessor::create
 	params.add(std::make_unique<juce::AudioParameterFloat>(
         PARAMS_LOWPASS_CUTOFF,
         "Low Pass Cutoff",
-		0.0f, 1.0f, 0.06f
+		0.0f, 1.0f, 0.3f
 	));
 
 	params.add(std::make_unique<juce::AudioParameterFloat>(
         PARAMS_LOWPASS_RESONANCE,
         "Low Pass Resonance",
-		0.0f, 3.0f, 5.0f
+		0.0f, 5.0f, 0.3f
 	));
 
 	params.add(std::make_unique<juce::AudioParameterBool>(
